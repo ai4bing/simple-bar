@@ -292,3 +292,14 @@ export const Zeplin = React.lazy(() => import("./library/zeplin.jsx"));
 export const Zoom = React.lazy(() => import("./library/zoom.jsx"));
 export const Zotero = React.lazy(() => import("./library/zotero.jsx"));
 export const Zulip = React.lazy(() => import("./library/zulip.jsx"));
+//custom
+export const Proton = React.lazy(() => import("./library/proton.jsx"));
+export const sioyek = React.lazy(() => import("./library/sioyek.jsx"));
+export const UPDF = React.lazy(() => import("./library/updf.jsx"));
+export const IINA = React.lazy(() => import("./library/iina.jsx"));
+export const Dictionary = React.lazy(() => import("./library/dictionary.jsx"));
+export const Messenger = React.lazy(() => import("./library/messenger.jsx"));
+export const kitty = React.lazy(() => import("./library/kitty.jsx"));
+export const Inkscape = React.lazy(() => import("./library/inkscape.jsx"));
+export const Cisco = React.lazy(() => import("./library/cisco.jsx"));
+export const Mathematica = React.lazy(() => import("./library/mathematica.jsx"));
