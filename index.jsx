@@ -244,6 +244,7 @@ function render({ output, error }) {
           <Stock.Widget />
           <Music.Widget />
           <Mpd.Widget />
+          <Wifi.Widget />
           <Weather.Widget />
           <Netstats.Widget />
           <Cpu.Widget />
@@ -253,7 +254,6 @@ function render({ output, error }) {
           <Mic.Widget />
           <Sound.Widget />
           <ViscosityVPN.Widget />
-          <Wifi.Widget />
           <Keyboard.Widget />
           <DateDisplay.Widget />
           <Time.Widget />
