@@ -22,6 +22,7 @@ import * as Mic from "./lib/components/data/mic.jsx";
 import * as Wifi from "./lib/components/data/wifi.jsx";
 import * as ViscosityVPN from "./lib/components/data/viscosity-vpn.jsx";
 import * as Keyboard from "./lib/components/data/keyboard.jsx";
+import * as Tidal from "./lib/components/data/tidal.jsx";
 import * as Spotify from "./lib/components/data/spotify.jsx";
 import * as YouTubeMusic from "./lib/components/data/youtube-music.jsx";
 import * as Crypto from "./lib/components/data/crypto.jsx";
@@ -238,6 +239,7 @@ function render({ output, error }) {
           <UserWidgets />
           <Zoom.Widget />
           <BrowserTrack.Widget />
+          <Tidal.Widget />
           <Spotify.Widget />
           <YouTubeMusic.Widget />
           <Crypto.Widget />
