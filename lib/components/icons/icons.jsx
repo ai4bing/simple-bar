@@ -93,7 +93,6 @@ export const DEVONthink3 = React.lazy(
   () => import("./library/de-v-o-nthink3.jsx"),
 );
 export const Discord = React.lazy(() => import("./library/discord.jsx"));
-export const Docker = React.lazy(() => import("./library/docker.jsx"));
 export const Dollar = React.lazy(() => import("./library/dollar.jsx"));
 export const DownArrow = React.lazy(() => import("./library/down-arrow.jsx"));
 export const Download = React.lazy(() => import("./library/download.jsx"));
@@ -327,6 +326,7 @@ export const Karabiner = React.lazy(() => import("./library/karabiner.jsx"));
 export const BetterTouchTool = React.lazy(
   () => import("./library/better-touch-tool.jsx"),
 );
+export const Docker = React.lazy(() => import("./library/docker.jsx"));
 export const WaterFox = React.lazy(() => import("./library/waterfox.jsx"));
 export const Steam = React.lazy(() => import("./library/steam.jsx"));
 export const Raycast = React.lazy(() => import("./library/raycast.jsx"));
