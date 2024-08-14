@@ -280,3 +280,8 @@ export const kitty = React.lazy(() => import("./library/kitty.jsx"));
 export const Inkscape = React.lazy(() => import("./library/inkscape.jsx"));
 export const Cisco = React.lazy(() => import("./library/cisco.jsx"));
 export const Mathematica = React.lazy(() => import("./library/mathematica.jsx"));
+export const Filen = React.lazy(() => import("./library/filen.jsx"));
+export const Tachiyomi = React.lazy(() => import("./library/tachiyomi.jsx"));
+export const Karabiner = React.lazy(() => import("./library/karabiner.jsx"));
+export const BetterTouchTool = React.lazy(() => import("./library/better-touch-tool.jsx"));
+export const Docker = React.lazy(() => import("./library/docker.jsx"));
