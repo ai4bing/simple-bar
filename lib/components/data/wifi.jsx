@@ -144,7 +144,7 @@ function openWifiPreferences(e) {
  */
 function renderName(name, hideNetworkName) {
   if (!name || hideNetworkName) return "";
-  if (name === "with an AirPort network.y off.") return "Disabled";
+  if (name === "nil") return "Disabled";
   if (name === "with an AirPort network.") return "Searching...";
   return name;
 }
