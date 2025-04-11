@@ -1,6 +1,4 @@
 import * as Uebersicht from "uebersicht";
-import * as Settings from "../settings";
-import * as Utils from "../utils";
 
 const { React } = Uebersicht;
 
@@ -41,34 +39,30 @@ export default function SimpleBarContextProvider({
   const [_displays, setDisplays] = React.useState(displays);
   const [missives, setMissives] = React.useState([]);
 
-  React.useEffect(() => {
-    const loadExternalConfig = async () => {
-      const configFileExists = await Settings.checkIfConfigFileExists();
-      if (!configFileExists) return;
-      try {
-        const config = JSON.parse(await Uebersicht.run(`cat ~/.simplebarrc`));
-        const settings = Utils.mergeDeep(Settings.defaultSettings, config);
-        setSettings(settings);
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error("Error loading external config:", e);
-      }
-    };
-    loadExternalConfig();
-  }, []);
-
   const { windowManager, enableServer, yabaiServerRefresh } = settings.global;
   const serverEnabled = enableServer && yabaiServerRefresh;
   const isYabai = windowManager === "yabai";
+  const isAeroSpace = windowManager === "aerospace";
 
   const currentDisplays = serverEnabled && isYabai ? _displays : displays;
 
   const displayId = parseInt(window.location.pathname.replace("/", ""), 10);
 
+  // Check if the built-in Retina Display is present in the current displays
+  const hasBuiltInRetina = currentDisplays?.some(
+    (d) => d["monitor-name"] === "Built-in Retina Display",
+  );
+
+  // Adjust displayId if the Retina screen is missing when using AeroSpace
+  // This prevents mismatch between Übersicht and AeroSpace display numbering
+  // as Übersicht still count closed built in screen in the display count
+  const adjustedDisplayId =
+    isAeroSpace && !hasBuiltInRetina ? displayId - 1 : displayId;
+
   const currentDisplay =
     currentDisplays?.find((d) => {
       const id = d["monitor-appkit-nsscreen-screens-id"] ?? d.id;
-      return id === displayId;
+      return id === adjustedDisplayId;
     }) || {};
 
   const displayIndex =

@@ -120,6 +120,9 @@ export const GoogleChrome = React.lazy(
 export const GnuCash = React.lazy(() => import("./library/gnu-cash.jsx"));
 export const GoLand = React.lazy(() => import("./library/go-land.jsx"));
 export const Grammarly = React.lazy(() => import("./library/grammarly.jsx"));
+export const HomeAssistant = React.lazy(
+  () => import("./library/home-assistant.jsx"),
+);
 export const HTTPie = React.lazy(() => import("./library/ht-t-pie.jsx"));
 export const Idea = React.lazy(() => import("./library/idea.jsx"));
 export const Insomnia = React.lazy(() => import("./library/insomnia.jsx"));
@@ -196,6 +199,7 @@ export const Pihole = React.lazy(() => import("./library/pihole.jsx"));
 export const Pine = React.lazy(() => import("./library/pine.jsx"));
 export const Pins = React.lazy(() => import("./library/pins.jsx"));
 export const Playing = React.lazy(() => import("./library/playing.jsx"));
+export const Plex = React.lazy(() => import("./library/plex.jsx"));
 export const Podcasts = React.lazy(() => import("./library/podcasts.jsx"));
 export const Pomodone = React.lazy(() => import("./library/pomodone.jsx"));
 export const Postman = React.lazy(() => import("./library/postman.jsx"));

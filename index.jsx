@@ -43,29 +43,29 @@ import * as Settings from "./lib/settings";
 const { React } = Uebersicht;
 
 // Spaces & process components are lazy loaded to avoid loading them when not needed
-const YabaiContextProvider = React.lazy(() =>
-  import("./lib/components/yabai-context.jsx")
+const YabaiContextProvider = React.lazy(
+  () => import("./lib/components/yabai-context.jsx")
 );
-const AerospaceContextProvider = React.lazy(() =>
-  import("./lib/components/aerospace-context.jsx")
+const AerospaceContextProvider = React.lazy(
+  () => import("./lib/components/aerospace-context.jsx")
 );
-const FlashspaceContextProvider = React.lazy(() =>
-  import("./lib/components/flashspace-context.jsx")
+const FlashspaceContextProvider = React.lazy(
+  () => import("./lib/components/flashspace-context.jsx")
 );
-const YabaiSpaces = React.lazy(() =>
-  import("./lib/components/yabai/spaces.jsx")
+const YabaiSpaces = React.lazy(
+  () => import("./lib/components/yabai/spaces.jsx")
 );
-const YabaiProcess = React.lazy(() =>
-  import("./lib/components/yabai/process.jsx")
+const YabaiProcess = React.lazy(
+  () => import("./lib/components/yabai/process.jsx")
 );
-const AerospaceSpaces = React.lazy(() =>
-  import("./lib/components/aerospace/spaces.jsx")
+const AerospaceSpaces = React.lazy(
+  () => import("./lib/components/aerospace/spaces.jsx")
 );
-const AerospaceProcess = React.lazy(() =>
-  import("./lib/components/aerospace/process.jsx")
+const AerospaceProcess = React.lazy(
+  () => import("./lib/components/aerospace/process.jsx")
 );
-const FlashspaceSpaces = React.lazy(() =>
-  import("./lib/components/flashspace/spaces.jsx")
+const FlashspaceSpaces = React.lazy(
+  () => import("./lib/components/flashspace/spaces.jsx")
 );
 
 // Set refresh frequency to false
@@ -73,6 +73,9 @@ const FlashspaceSpaces = React.lazy(() =>
 // yabai or AeroSpaces for spaces & process widgets and data widgets are refreshed with
 // their local refresh functions
 const refreshFrequency = false;
+
+// Init settings from file if existing
+Settings.init();
 
 // Get settings from the Settings module
 const settings = Settings.get();
@@ -83,7 +86,8 @@ const {
   // while on an empty workspace, click on simple-bar then press cmd + , to open it.
   yabaiPath = "/opt/homebrew/bin/yabai",
   aerospacePath = "/opt/homebrew/bin/aerospace",
-  windowManager, // Window manager type (yabai or aerospace)
+  flashspacePath = "/usr/local/bin/flashspace",
+  windowManager, // Window manager type (yabai, aerospace or flashspace)
   shell, // Shell to use for commands
   enableServer, // Enable server mode
   yabaiServerRefresh, // Refresh rate for yabai server
@@ -97,7 +101,13 @@ const enableTitleChangedSignal = !hideWindowTitle && !displayOnlyIcon;
 // Construct command arguments based on window manager type
 const yabaiArgs = `${yabaiPath} ${displaySkhdMode} ${disableSignals} ${enableTitleChangedSignal}`;
 const aerospaceArgs = `${aerospacePath}`;
-const args = getArguments(windowManager, yabaiArgs, aerospaceArgs);
+const flashspaceArgs = `${flashspacePath}`;
+const args = getArguments(
+  windowManager,
+  yabaiArgs,
+  aerospaceArgs,
+  flashspaceArgs
+);
 const command = `${shell} simple-bar/lib/scripts/init-${windowManager}.sh ${args}`;
 
 // Inject global styles into the document
@@ -268,12 +278,15 @@ function render({ output, error }) {
 
 export { command, refreshFrequency, render };
 
-function getArguments(windowManager, yabaiArgs, aerospaceArgs) {
+function getArguments(windowManager, yabaiArgs, aerospaceArgs, flashspaceArgs) {
   if (windowManager === "yabai") {
     return yabaiArgs;
   }
   if (windowManager === "aerospace") {
     return aerospaceArgs;
+  }
+  if (windowManager === "flashspace") {
+    return flashspaceArgs;
   }
   return "";
 }
