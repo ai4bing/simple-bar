@@ -22,13 +22,13 @@ export const Widget = React.memo(() => {
   const { displayIndex, settings } = useSimpleBarContext();
   const { widgets, micWidgetOptions } = settings;
   const { micWidget } = widgets;
-  const { refreshFrequency, showOnDisplay } = micWidgetOptions;
+  const { refreshFrequency, showOnDisplay, showIcon } = micWidgetOptions;
 
   // Determine the refresh frequency for the widget.
   const refresh = React.useMemo(
     () =>
       Utils.getRefreshFrequency(refreshFrequency, DEFAULT_REFRESH_FREQUENCY),
-    [refreshFrequency]
+    [refreshFrequency],
   );
 
   // Determine if the widget should be visible.
@@ -55,7 +55,7 @@ export const Widget = React.memo(() => {
   const getMic = React.useCallback(async () => {
     if (!visible) return;
     const volume = await Uebersicht.run(
-      `osascript -e 'set ovol to input volume of (get volume settings)'`
+      `osascript -e 'set ovol to input volume of (get volume settings)'`,
     );
     setState({ volume: Utils.cleanupOutput(volume) });
     setLoading(false);
@@ -115,9 +115,11 @@ export const Widget = React.memo(() => {
   return (
     <DataWidget.Widget classes={classes} disableSlider>
       <div className="mic__display">
-        <SuspenseIcon>
-          <Icon />
-        </SuspenseIcon>
+        {showIcon && (
+          <SuspenseIcon>
+            <Icon />
+          </SuspenseIcon>
+        )}
         <span className="mic__value">{formattedVolume}</span>
       </div>
       <div className="mic__slider-container">

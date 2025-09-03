@@ -20,14 +20,14 @@ export const Widget = () => {
   const { displayIndex, settings } = useSimpleBarContext();
   const { widgets, memoryWidgetOptions } = settings;
   const { memoryWidget } = widgets;
-  const { refreshFrequency, showOnDisplay, memoryMonitorApp } =
+  const { refreshFrequency, showOnDisplay, memoryMonitorApp, showIcon } =
     memoryWidgetOptions;
 
   // Determine the refresh frequency for the widget
   const refresh = React.useMemo(
     () =>
       Utils.getRefreshFrequency(refreshFrequency, DEFAULT_REFRESH_FREQUENCY),
-    [refreshFrequency]
+    [refreshFrequency],
   );
 
   // Determine if the widget should be visible
@@ -50,7 +50,7 @@ export const Widget = () => {
    */
   const getMemory = React.useCallback(async () => {
     const output = await Uebersicht.run(
-      "memory_pressure | tail -1 | awk '{ print $5 }' | tr -d '%'"
+      "memory_pressure | tail -1 | awk '{ print $5 }' | tr -d '%'",
     );
     const free = parseInt(Utils.cleanupOutput(output), 10);
     setState({ free });
@@ -99,7 +99,11 @@ export const Widget = () => {
   });
 
   return (
-    <DataWidget.Widget classes={classes} Icon={Pie} onClick={onClick}>
+    <DataWidget.Widget
+      classes={classes}
+      Icon={showIcon ? Pie : null}
+      onClick={onClick}
+    >
       <div className="memory__content">{used}%</div>
     </DataWidget.Widget>
   );

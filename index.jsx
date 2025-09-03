@@ -11,6 +11,7 @@ import * as Process from "./lib/styles/components/process";
 import * as Zoom from "./lib/components/data/zoom.jsx";
 import * as Time from "./lib/components/data/time.jsx";
 import * as DateDisplay from "./lib/components/data/date-display.jsx";
+import * as GitHub from "./lib/components/data/github.jsx";
 import * as Weather from "./lib/components/data/weather.jsx";
 import * as Netstats from "./lib/components/data/netstats.jsx";
 import * as Cpu from "./lib/components/data/cpu.jsx";
@@ -44,28 +45,28 @@ const { React } = Uebersicht;
 
 // Spaces & process components are lazy loaded to avoid loading them when not needed
 const YabaiContextProvider = React.lazy(
-  () => import("./lib/components/yabai-context.jsx")
+  () => import("./lib/components/yabai-context.jsx"),
 );
 const AerospaceContextProvider = React.lazy(
-  () => import("./lib/components/aerospace-context.jsx")
+  () => import("./lib/components/aerospace-context.jsx"),
 );
 const FlashspaceContextProvider = React.lazy(
-  () => import("./lib/components/flashspace-context.jsx")
+  () => import("./lib/components/flashspace-context.jsx"),
 );
 const YabaiSpaces = React.lazy(
-  () => import("./lib/components/yabai/spaces.jsx")
+  () => import("./lib/components/yabai/spaces.jsx"),
 );
 const YabaiProcess = React.lazy(
-  () => import("./lib/components/yabai/process.jsx")
+  () => import("./lib/components/yabai/process.jsx"),
 );
 const AerospaceSpaces = React.lazy(
-  () => import("./lib/components/aerospace/spaces.jsx")
+  () => import("./lib/components/aerospace/spaces.jsx"),
 );
 const AerospaceProcess = React.lazy(
-  () => import("./lib/components/aerospace/process.jsx")
+  () => import("./lib/components/aerospace/process.jsx"),
 );
 const FlashspaceSpaces = React.lazy(
-  () => import("./lib/components/flashspace/spaces.jsx")
+  () => import("./lib/components/flashspace/spaces.jsx"),
 );
 
 // Set refresh frequency to false
@@ -106,7 +107,7 @@ const args = getArguments(
   windowManager,
   yabaiArgs,
   aerospaceArgs,
-  flashspaceArgs
+  flashspaceArgs,
 );
 const command = `${shell} simple-bar/lib/scripts/init-${windowManager}.sh ${args}`;
 
@@ -122,6 +123,7 @@ Utils.injectStyles("simple-bar-index-styles", [
   DateDisplay.styles,
   Zoom.styles,
   Time.styles,
+  GitHub.styles,
   Weather.styles,
   Netstats.styles,
   Cpu.styles,
@@ -157,6 +159,7 @@ function render({ output, error }) {
     "simple-bar--no-color-in-data": settings.global.noColorInData,
     "simple-bar--on-bottom": settings.global.bottomBar,
     "simple-bar--inline-spaces-options": settings.global.inlineSpacesOptions,
+    "simple-bar--animations-disabled": settings.global.disableAnimations,
     "simple-bar--spaces-background-color-as-foreground":
       settings.global.spacesBackgroundColorAsForeground,
     "simple-bar--widgets-background-color-as-foreground":
@@ -257,6 +260,7 @@ function render({ output, error }) {
           <Music.Widget />
           <Mpd.Widget />
           <Wifi.Widget />
+          <GitHub.Widget />
           <Weather.Widget />
           <Netstats.Widget />
           <Cpu.Widget />

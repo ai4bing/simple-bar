@@ -26,6 +26,7 @@ export const Widget = React.memo(() => {
       showSpecter,
       showOnDisplay,
       youtubeMusicPort,
+      showIcon,
     },
   } = settings;
 
@@ -33,7 +34,7 @@ export const Widget = React.memo(() => {
   const refresh = React.useMemo(
     () =>
       Utils.getRefreshFrequency(refreshFrequency, DEFAULT_REFRESH_FREQUENCY),
-    [refreshFrequency]
+    [refreshFrequency],
   );
 
   // Determine if the widget should be visible on the current display
@@ -94,7 +95,7 @@ export const Widget = React.memo(() => {
 
       return await fetch(url, { method, headers });
     },
-    [apiUrl, getAccessToken]
+    [apiUrl, getAccessToken],
   );
 
   /**
@@ -119,7 +120,7 @@ export const Widget = React.memo(() => {
     visible,
     refreshState,
     resetWidget,
-    setLoading
+    setLoading,
   );
   // Use widget refresh hook to periodically refresh the state
   useWidgetRefresh(visible, refreshState, refresh);
@@ -167,7 +168,7 @@ export const Widget = React.memo(() => {
   return (
     <DataWidget.Widget
       classes={classes}
-      Icon={Icon}
+      Icon={showIcon ? Icon : null}
       onClick={onClick}
       onRightClick={onRightClick}
       onMiddleClick={onMiddleClick}

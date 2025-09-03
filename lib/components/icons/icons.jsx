@@ -25,6 +25,9 @@ export const AndroidStudio = React.lazy(
 );
 export const Anki = React.lazy(() => import("./library/anki.jsx"));
 export const Anytype = React.lazy(() => import("./library/anytype.jsx"));
+export const AppleSimulator = React.lazy(
+  () => import("./library/apple-simulator.jsx"),
+);
 export const AppStore = React.lazy(() => import("./library/app-store.jsx"));
 export const Apple = React.lazy(() => import("./library/apple.jsx"));
 export const Arc = React.lazy(() => import("./library/arc.jsx"));
@@ -33,6 +36,9 @@ export const Audacity = React.lazy(() => import("./library/audacity.jsx"));
 export const Aqua = React.lazy(() => import("./library/aqua.jsx"));
 export const Bank = React.lazy(() => import("./library/bank.jsx"));
 export const BattleNet = React.lazy(() => import("./library/battle-net.jsx"));
+export const BambuStudio = React.lazy(
+  () => import("./library/bambu-studio.jsx"),
+);
 export const Bear = React.lazy(() => import("./library/bear.jsx"));
 export const Beekeeper = React.lazy(() => import("./library/beekeeper.jsx"));
 export const Bell = React.lazy(() => import("./library/bell.jsx"));
@@ -78,6 +84,7 @@ export const ColorPicker = React.lazy(
 );
 export const Copilot = React.lazy(() => import("./library/copilot.jsx"));
 export const CPU = React.lazy(() => import("./library/cp-u.jsx"));
+export const Cursor = React.lazy(() => import("./library/cursor.jsx"));
 export const DataGrip = React.lazy(() => import("./library/data-grip.jsx"));
 export const Date = React.lazy(() => import("./library/date.jsx"));
 export const Deezer = React.lazy(() => import("./library/deezer.jsx"));
@@ -86,6 +93,7 @@ export const DEVONthink3 = React.lazy(
   () => import("./library/de-v-o-nthink3.jsx"),
 );
 export const Discord = React.lazy(() => import("./library/discord.jsx"));
+export const Docker = React.lazy(() => import("./library/docker.jsx"));
 export const Dollar = React.lazy(() => import("./library/dollar.jsx"));
 export const DownArrow = React.lazy(() => import("./library/down-arrow.jsx"));
 export const Download = React.lazy(() => import("./library/download.jsx"));
@@ -112,6 +120,7 @@ export const Fog = React.lazy(() => import("./library/fog.jsx"));
 export const Folx = React.lazy(() => import("./library/folx.jsx"));
 export const FreeTube = React.lazy(() => import("./library/free-tube.jsx"));
 export const Gear = React.lazy(() => import("./library/gear.jsx"));
+export const Ghostty = React.lazy(() => import("./library/ghostty.jsx"));
 export const GitHub = React.lazy(() => import("./library/git-hub.jsx"));
 export const GoodNotes = React.lazy(() => import("./library/good-notes.jsx"));
 export const GoogleChrome = React.lazy(
@@ -287,11 +296,13 @@ export const WhatsApp = React.lazy(() => import("./library/whats-app.jsx"));
 export const Widget = React.lazy(() => import("./library/widget.jsx"));
 export const Wifi = React.lazy(() => import("./library/wifi.jsx"));
 export const WifiOff = React.lazy(() => import("./library/wifi-off.jsx"));
+export const Windows = React.lazy(() => import("./library/windows.jsx"));
 export const Xcode = React.lazy(() => import("./library/xcode.jsx"));
 export const YoutubeMusic = React.lazy(
   () => import("./library/youtube-music.jsx"),
 );
 export const Zed = React.lazy(() => import("./library/zed.jsx"));
+export const ZenBrowser = React.lazy(() => import("./library/zen-browser.jsx"));
 export const Zeplin = React.lazy(() => import("./library/zeplin.jsx"));
 export const Zoom = React.lazy(() => import("./library/zoom.jsx"));
 export const Zotero = React.lazy(() => import("./library/zotero.jsx"));

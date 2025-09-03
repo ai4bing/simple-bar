@@ -53,7 +53,7 @@ function AerospaceContextProvider({ children }) {
         return Promise.all(
           result.map(async (space) => {
             const focused = space.workspace === focusedSpace.workspace;
-            const monitor = space["monitor-appkit-nsscreen-screens-id"];
+            const monitor = Aerospace.getCustomDisplayIndex(space);
             const windows = await Aerospace.getWindows(space.workspace);
             const formatted = windows.map((window) => {
               const focused =
@@ -64,12 +64,30 @@ function AerospaceContextProvider({ children }) {
               };
             });
             return { ...space, windows: formatted, focused, monitor };
-          })
+          }),
         );
-      })
+      }),
     );
     setAerospaceSpaces(spaces.flat());
   }, [displays]);
+
+  // Refreshes spaces with the data sent by simple-bar-server if it exists
+  // in order to speed up the process then refreshes everything in background
+  // else, simply refreshes everything
+  const refreshSpaces = React.useCallback(
+    async (data) => {
+      if (data) {
+        const { space } = data;
+        setAerospaceSpaces((current) => {
+          return current.map((s) => ({ ...s, focused: s.workspace === space }));
+        });
+        getSpaces();
+      } else {
+        await getSpaces();
+      }
+    },
+    [getSpaces],
+  );
 
   // Resets the aerospace spaces state
   const resetSpaces = () => {
@@ -77,12 +95,12 @@ function AerospaceContextProvider({ children }) {
   };
 
   // Use server socket to fetch and reset spaces
-  useServerSocket("spaces", serverEnabled, getSpaces, resetSpaces);
+  useServerSocket("spaces", serverEnabled, refreshSpaces, resetSpaces);
 
   // Fetch spaces on component mount and when displayIndex changes
   React.useEffect(() => {
-    getSpaces();
-  }, [getSpaces, displayIndex]);
+    refreshSpaces();
+  }, [refreshSpaces, displayIndex]);
 
   return (
     <AerospaceContext.Provider value={{ spaces: aerospaceSpaces }}>

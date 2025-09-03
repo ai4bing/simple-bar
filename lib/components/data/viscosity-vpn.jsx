@@ -26,45 +26,52 @@ export const Widget = React.memo(() => {
     vpnConnectionName,
     vpnShowConnectionName,
     showOnDisplay,
+    showIcon,
   } = vpnWidgetOptions;
 
   // Determine the refresh frequency for the widget
   const refresh = React.useMemo(
     () =>
       Utils.getRefreshFrequency(refreshFrequency, DEFAULT_REFRESH_FREQUENCY),
-    [refreshFrequency]
+    [refreshFrequency],
   );
 
-  // Determine if the widget should be visible on the current display
+  // Determine if the widget should be visible
   const visible =
     Utils.isVisibleOnDisplay(displayIndex, showOnDisplay) && vpnWidget;
 
   const [state, setState] = React.useState();
   const [loading, setLoading] = React.useState(visible);
+  const [isViscosityActive, setIsViscosityActive] = React.useState(false);
 
-  // Reset the widget state
+  /**
+   * Reset the widget state.
+   */
   const resetWidget = () => {
     setState(undefined);
     setLoading(false);
+    setIsViscosityActive(false);
   };
 
   /**
-   * Fetch the VPN status.
+   * Fetch the current VPN status.
    */
   const getVPN = React.useCallback(async () => {
     if (!visible) return;
     const isRunning = await Uebersicht.run(
-      `osascript -e 'tell application "System Events" to (name of processes) contains "Viscosity"' 2>&1`
+      `osascript -e 'tell application "System Events" to (name of processes) contains "Viscosity"' 2>&1`,
     );
     if (Utils.cleanupOutput(isRunning) === "false") {
       setLoading(false);
+      setIsViscosityActive(false);
       return;
     }
     const status = await Uebersicht.run(
-      `osascript -e "tell application \\"Viscosity\\" to return state of the first connection where name is equal to \\"${vpnConnectionName}\\"" 2>/dev/null`
+      `osascript -e "tell application \\"Viscosity\\" to return state of the first connection where name is equal to \\"${vpnConnectionName}\\"" 2>/dev/null`,
     );
     if (!status.length) return;
     setState({ status: Utils.cleanupOutput(status) });
+    setIsViscosityActive(true);
     setLoading(false);
   }, [visible, vpnConnectionName]);
 
@@ -74,7 +81,7 @@ export const Widget = React.memo(() => {
   useWidgetRefresh(visible, getVPN, refresh);
 
   if (loading) return <DataWidgetLoader.Widget className="viscosity-vpn" />;
-  if (!state || !vpnConnectionName.length) return null;
+  if (!state || !vpnConnectionName.length || !isViscosityActive) return null;
 
   const { status } = state;
   const isConnected = status === "Connected";
@@ -96,7 +103,11 @@ export const Widget = React.memo(() => {
   };
 
   return (
-    <DataWidget.Widget classes={classes} Icon={Icon} onClick={clicked}>
+    <DataWidget.Widget
+      classes={classes}
+      Icon={showIcon ? Icon : null}
+      onClick={clicked}
+    >
       {vpnShowConnectionName ? vpnConnectionName : status}
     </DataWidget.Widget>
   );
@@ -113,19 +124,19 @@ Widget.displayName = "ViscosityVPN";
 function toggleVPN(isConnected, vpnConnectionName, pushMissive) {
   if (isConnected) {
     Uebersicht.run(
-      `osascript -e 'tell application "Viscosity" to disconnect "${vpnConnectionName}"'`
+      `osascript -e 'tell application "Viscosity" to disconnect "${vpnConnectionName}"'`,
     );
     Utils.notification(
       `Disabling Viscosity ${vpnConnectionName} network...`,
-      pushMissive
+      pushMissive,
     );
   } else {
     Uebersicht.run(
-      `osascript -e 'tell application "Viscosity" to connect "${vpnConnectionName}"'`
+      `osascript -e 'tell application "Viscosity" to connect "${vpnConnectionName}"'`,
     );
     Utils.notification(
       `Enabling Viscosity ${vpnConnectionName} network...`,
-      pushMissive
+      pushMissive,
     );
   }
 }

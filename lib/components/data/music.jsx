@@ -21,13 +21,14 @@ export const Widget = React.memo(() => {
   const { displayIndex, settings } = useSimpleBarContext();
   const { widgets, musicWidgetOptions } = settings;
   const { musicWidget } = widgets;
-  const { refreshFrequency, showSpecter, showOnDisplay } = musicWidgetOptions;
+  const { refreshFrequency, showSpecter, showOnDisplay, showIcon } =
+    musicWidgetOptions;
 
   // Determine the refresh frequency for the widget
   const refresh = React.useMemo(
     () =>
       Utils.getRefreshFrequency(refreshFrequency, DEFAULT_REFRESH_FREQUENCY),
-    [refreshFrequency]
+    [refreshFrequency],
   );
 
   // Determine if the widget should be visible on the current display
@@ -36,6 +37,7 @@ export const Widget = React.memo(() => {
 
   const [state, setState] = React.useState();
   const [loading, setLoading] = React.useState(visible);
+  const [isMusicActive, setIsMusicActive] = React.useState(false);
 
   /**
    * Resets the widget state.
@@ -43,6 +45,7 @@ export const Widget = React.memo(() => {
   const resetWidget = () => {
     setState(undefined);
     setLoading(false);
+    setIsMusicActive(false);
   };
 
   /**
@@ -54,21 +57,22 @@ export const Widget = React.memo(() => {
     const processName =
       Utils.cleanupOutput(osVersion) === "10.15" ? "iTunes" : "Music";
     const isRunning = await Uebersicht.run(
-      `osascript -e 'tell application "System Events" to (name of processes) contains "${processName}"' 2>&1`
+      `osascript -e 'tell application "System Events" to (name of processes) contains "${processName}"' 2>&1`,
     );
     if (Utils.cleanupOutput(isRunning) === "false") {
       setLoading(false);
+      setIsMusicActive(false);
       return;
     }
     const [playerState, trackName, artistName] = await Promise.all([
       Uebersicht.run(
-        `osascript -e 'tell application "${processName}" to player state as string' 2>/dev/null || echo "stopped"`
+        `osascript -e 'tell application "${processName}" to player state as string' 2>/dev/null || echo "stopped"`,
       ),
       Uebersicht.run(
-        `osascript -e 'tell application "${processName}" to name of current track as string' 2>/dev/null || echo "unknown track"`
+        `osascript -e 'tell application "${processName}" to name of current track as string' 2>/dev/null || echo "unknown track"`,
       ),
       Uebersicht.run(
-        `osascript -e 'tell application "${processName}" to artist of current track as string' 2>/dev/null || echo "unknown artist"`
+        `osascript -e 'tell application "${processName}" to artist of current track as string' 2>/dev/null || echo "unknown artist"`,
       ),
     ]);
     setState({
@@ -77,6 +81,7 @@ export const Widget = React.memo(() => {
       artistName: Utils.cleanupOutput(artistName),
       processName: Utils.cleanupOutput(processName),
     });
+    setIsMusicActive(true);
     setLoading(false);
   }, [visible]);
 
@@ -86,7 +91,7 @@ export const Widget = React.memo(() => {
   useWidgetRefresh(visible, getMusic, refresh);
 
   if (loading) return <DataWidgetLoader.Widget className="music" />;
-  if (!state) return null;
+  if (!state || !isMusicActive) return null;
   const { processName, playerState, trackName, artistName } = state;
 
   if (!trackName.length) return null;
@@ -111,7 +116,7 @@ export const Widget = React.memo(() => {
   const onRightClick = (e) => {
     Utils.clickEffect(e);
     Uebersicht.run(
-      `osascript -e 'tell application "${processName}" to Next Track'`
+      `osascript -e 'tell application "${processName}" to Next Track'`,
     );
     getMusic();
   };
@@ -133,7 +138,7 @@ export const Widget = React.memo(() => {
   return (
     <DataWidget.Widget
       classes={classes}
-      Icon={Icon}
+      Icon={showIcon ? Icon : null}
       onClick={onClick}
       onRightClick={onRightClick}
       onMiddleClick={onMiddleClick}

@@ -30,13 +30,14 @@ export const Widget = React.memo(() => {
     mpdPort,
     mpdFormatString,
     showOnDisplay,
+    showIcon,
   } = mpdWidgetOptions;
 
   // Determine the refresh frequency for the widget
   const refresh = React.useMemo(
     () =>
       Utils.getRefreshFrequency(refreshFrequency, DEFAULT_REFRESH_FREQUENCY),
-    [refreshFrequency]
+    [refreshFrequency],
   );
 
   // Determine if the widget should be visible on the current display
@@ -45,6 +46,7 @@ export const Widget = React.memo(() => {
 
   const [state, setState] = React.useState();
   const [loading, setLoading] = React.useState(visible);
+  const [isMpdActive, setIsMpdActive] = React.useState(false);
   const { volume: _volume } = state || {};
   const defaultVolume = _volume && parseInt(_volume);
   const [volume, setVolume] = React.useState(defaultVolume);
@@ -56,6 +58,7 @@ export const Widget = React.memo(() => {
   const resetWidget = () => {
     setState(undefined);
     setLoading(false);
+    setIsMpdActive(false);
   };
 
   /**
@@ -65,19 +68,30 @@ export const Widget = React.memo(() => {
     if (!visible) return;
 
     try {
+      const mpdProcess = await Uebersicht.run(
+        `pgrep -x mpd > /dev/null && echo "true" || echo "false"`,
+      );
+
+      if (Utils.cleanupOutput(mpdProcess) === "false") {
+        setLoading(false);
+        setIsMpdActive(false);
+        return;
+      }
+
       const [playerState, trackInfo, volumeState] = await Promise.all([
         Uebersicht.run(
-          `${mpdBinaryPath} --host ${mpdHost} --port ${mpdPort} | head -n 2 | tail -n 1 | awk '{print substr($1,2,length($1)-2)}' 2>/dev/null || echo "stopped"`
+          `${mpdBinaryPath} --host ${mpdHost} --port ${mpdPort} | head -n 2 | tail -n 1 | awk '{print substr($1,2,length($1)-2)}' 2>/dev/null || echo "stopped"`,
         ),
         Uebersicht.run(
-          `${mpdBinaryPath} --host ${mpdHost} --port ${mpdPort} --format "${mpdFormatString}" | head -n 1`
+          `${mpdBinaryPath} --host ${mpdHost} --port ${mpdPort} --format "${mpdFormatString}" | head -n 1`,
         ),
         Uebersicht.run(
-          `${mpdBinaryPath} --host ${mpdHost} --port ${mpdPort} volume | sed -e 's/volume:[ ]*//g' -e 's/%//g'`
+          `${mpdBinaryPath} --host ${mpdHost} --port ${mpdPort} volume | sed -e 's/volume:[ ]*//g' -e 's/%//g'`,
         ),
       ]);
       if (Utils.cleanupOutput(trackInfo) === "") {
         setLoading(false);
+        setIsMpdActive(false);
         return;
       }
       setState({
@@ -85,9 +99,11 @@ export const Widget = React.memo(() => {
         trackInfo: Utils.cleanupOutput(trackInfo),
         volume: Utils.cleanupOutput(volumeState),
       });
+      setIsMpdActive(true);
       setLoading(false);
     } catch (e) {
       setLoading(false);
+      setIsMpdActive(false);
     }
   }, [visible, mpdBinaryPath, mpdHost, mpdPort, mpdFormatString]);
 
@@ -105,7 +121,7 @@ export const Widget = React.memo(() => {
   useWidgetRefresh(visible, getMpd, refresh);
 
   if (loading) return <DataWidgetLoader.Widget className="mpd" />;
-  if (!state) return null;
+  if (!state || !isMpdActive) return null;
   const { playerState, trackInfo } = state;
 
   if (!trackInfo.length) return null;
@@ -150,7 +166,7 @@ export const Widget = React.memo(() => {
   return (
     <DataWidget.Widget
       classes={classes}
-      Icon={Icon}
+      Icon={showIcon ? Icon : null}
       onClick={onClick}
       showSpecter={showSpecter && isPlaying}
       disableSlider

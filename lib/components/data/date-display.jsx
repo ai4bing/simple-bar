@@ -27,6 +27,7 @@ export const Widget = React.memo(() => {
     locale,
     calendarApp,
     showOnDisplay,
+    showIcon,
   } = dateWidgetOptions;
 
   // Determine if the widget should be visible based on display settings
@@ -37,7 +38,7 @@ export const Widget = React.memo(() => {
   const refresh = React.useMemo(
     () =>
       Utils.getRefreshFrequency(refreshFrequency, DEFAULT_REFRESH_FREQUENCY),
-    [refreshFrequency]
+    [refreshFrequency],
   );
 
   const [state, setState] = React.useState();
@@ -52,7 +53,7 @@ export const Widget = React.memo(() => {
       month: formatOptions,
       day: "numeric",
     }),
-    [formatOptions]
+    [formatOptions],
   );
 
   // Ensure locale is valid, default to "en-UK" if not
@@ -97,7 +98,7 @@ export const Widget = React.memo(() => {
   return (
     <DataWidget.Widget
       classes="date-display"
-      Icon={Icons.Date}
+      Icon={showIcon ? Icons.Date : null}
       onClick={onClick}
     >
       {now}

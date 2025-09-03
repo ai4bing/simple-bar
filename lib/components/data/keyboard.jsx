@@ -21,13 +21,13 @@ export const Widget = React.memo(() => {
   const { displayIndex, settings } = useSimpleBarContext();
   const { widgets, keyboardWidgetOptions } = settings;
   const { keyboardWidget } = widgets;
-  const { refreshFrequency, showOnDisplay } = keyboardWidgetOptions;
+  const { refreshFrequency, showOnDisplay, showIcon } = keyboardWidgetOptions;
 
   // Determine the refresh frequency for the widget
   const refresh = React.useMemo(
     () =>
       Utils.getRefreshFrequency(refreshFrequency, DEFAULT_REFRESH_FREQUENCY),
-    [refreshFrequency]
+    [refreshFrequency],
   );
 
   // Determine if the widget should be visible based on display settings
@@ -51,9 +51,11 @@ export const Widget = React.memo(() => {
   const getKeyboard = React.useCallback(async () => {
     if (!visible) return;
     const keyboard = await Uebersicht.run(
-      `defaults read ~/Library/Preferences/com.apple.HIToolbox.plist AppleSelectedInputSources | awk '/KeyboardLayout Name/ {print $4}'`
+      `defaults read ~/Library/Preferences/com.apple.HIToolbox.plist AppleSelectedInputSources | awk '/KeyboardLayout Name/ {$1=$2=$3=""; print $0}'`,
     );
-    const layout = Utils.cleanupOutput(keyboard).replace(";", "");
+    const layout = Utils.cleanupOutput(keyboard)
+      .replace(";", "")
+      .replaceAll('"', "");
     if (layout.length) {
       setState({ keyboard: layout });
       setLoading(false);
@@ -61,7 +63,7 @@ export const Widget = React.memo(() => {
     }
 
     const inputMode = await Uebersicht.run(
-      `defaults read ~/Library/Preferences/com.apple.HIToolbox.plist AppleSelectedInputSources | awk '/"Input Mode" =/ {print $4}'`
+      `defaults read ~/Library/Preferences/com.apple.HIToolbox.plist AppleSelectedInputSources | awk '/"Input Mode" =/ {$1=$2=$3=""; print $0}'`,
     );
     const cleanedInputMode = Utils.cleanupOutput(inputMode)
       .replace(/"com.apple.inputmethod.(.*)"/, "$1")
@@ -87,7 +89,10 @@ export const Widget = React.memo(() => {
   if (!keyboard?.length) return null;
 
   return (
-    <DataWidget.Widget classes="keyboard" Icon={Icons.Keyboard}>
+    <DataWidget.Widget
+      classes="keyboard"
+      Icon={showIcon ? Icons.Keyboard : null}
+    >
       {keyboard}
     </DataWidget.Widget>
   );

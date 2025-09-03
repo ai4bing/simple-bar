@@ -36,7 +36,7 @@ export function Widget({
   const ref = React.useRef();
   const Tag = getTag(onClick, href);
   const dataWidgetClasses = Utils.classNames("data-widget", classes, {
-    "data-widget--clickable": onClick,
+    "data-widget--clickable": href || onClick,
   });
 
   /**
@@ -56,7 +56,7 @@ export function Widget({
     Utils.startSliding(
       ref.current,
       ".data-widget__inner",
-      ".data-widget__slider"
+      ".data-widget__slider",
     );
   };
 

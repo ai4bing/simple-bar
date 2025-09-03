@@ -22,7 +22,7 @@ export const Widget = React.memo(() => {
   const { displayIndex, settings } = useSimpleBarContext();
   const { widgets, browserTrackWidgetOptions } = settings;
   const { browserTrackWidget } = widgets;
-  const { refreshFrequency, showSpecter, showOnDisplay } =
+  const { refreshFrequency, showSpecter, showOnDisplay, showIcon } =
     browserTrackWidgetOptions;
   const visible =
     Utils.isVisibleOnDisplay(displayIndex, showOnDisplay) && browserTrackWidget;
@@ -30,7 +30,7 @@ export const Widget = React.memo(() => {
   const refresh = React.useMemo(
     () =>
       Utils.getRefreshFrequency(refreshFrequency, DEFAULT_REFRESH_FREQUENCY),
-    [refreshFrequency]
+    [refreshFrequency],
   );
 
   const ref = React.useRef();
@@ -53,10 +53,10 @@ export const Widget = React.memo(() => {
     if (!visible) return;
     const [firefoxStatus, firefoxDevStatus] = await Promise.all([
       Uebersicht.run(
-        `ps aux | grep -v 'grep' | grep -q 'Firefox' && echo "true" || echo "false"`
+        `ps aux | grep -v 'grep' | grep -q 'Firefox' && echo "true" || echo "false"`,
       ),
       Uebersicht.run(
-        `ps aux | grep -v 'grep' | grep -q 'Firefox Developer Edition' && echo "true" || echo "false"`
+        `ps aux | grep -v 'grep' | grep -q 'Firefox Developer Edition' && echo "true" || echo "false"`,
       ),
     ]);
     const isFirefoxDevRunning =
@@ -65,15 +65,15 @@ export const Widget = React.memo(() => {
     const scriptNamePrefix = isFirefoxDevRunning
       ? "firefox-dev"
       : isFirefoxRunning
-      ? "firefox"
-      : "browser";
+        ? "firefox"
+        : "browser";
 
     const [browserTrackOutput, spotifyStatus] = await Promise.all([
       Uebersicht.run(
-        `osascript ./simple-bar/lib/scripts/${scriptNamePrefix}-audio.applescript 2>&1`
+        `osascript ./simple-bar/lib/scripts/${scriptNamePrefix}-audio.applescript 2>&1`,
       ),
       Uebersicht.run(
-        `ps aux | grep -v 'grep' | grep -q '[S]potify Helper' && echo "true" || echo "false"`
+        `ps aux | grep -v 'grep' | grep -q '[S]potify Helper' && echo "true" || echo "false"`,
       ),
     ]);
     const browserTrack = JSON.parse(browserTrackOutput);
@@ -89,7 +89,7 @@ export const Widget = React.memo(() => {
     visible,
     getBrowserTrack,
     resetWidget,
-    setLoading
+    setLoading,
   );
   useWidgetRefresh(visible, getBrowserTrack, refresh);
 
@@ -119,7 +119,7 @@ export const Widget = React.memo(() => {
     <DataWidget.Widget
       ref={ref}
       classes="browser-track"
-      Icon={Icon}
+      Icon={showIcon ? Icon : null}
       showSpecter={showSpecter}
     >
       {title}

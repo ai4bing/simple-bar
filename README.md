@@ -36,14 +36,14 @@ Among the principal features of `simple-bar`, you'll find:
 Simply clone this repo in your Übersicht widgets directory with the following command.
 
 ```bash
-git clone https://github.com/Jean-Tinland/simple-bar $HOME/Library/Application\ Support/Übersicht/widgets/simple-bar
+git clone --depth 1 https://github.com/Jean-Tinland/simple-bar $HOME/Library/Application\ Support/Übersicht/widgets/simple-bar
 ```
 
 You'll find the full installation guide in the [documentation](https://www.jeantinland.com/toolbox/simple-bar/documentation/installation/).
 
 > [!WARNING]\
-> If you encounter this error: "simple-bar-index.jsx: Something went wrong…", it may be simply due to the fact that the default value for yabai or AeroSpace path is wrong in simple-bar. You can set this path in the settings module.\
-> The default paths are `/opt/homebrew/bin/yabai` and `/opt/homebrew/bin/aerospace`.
+> If you encounter this error: "simple-bar-index.jsx: Something went wrong…", it may be simply due to the fact that the default value for yabai, AeroSpace or FlashSpace path is wrong in simple-bar. You can set this path in the settings module.\
+> The default paths are `$(which yabai)`, `$(which aerospace)` and `$(which flashspace)`.
 
 > [!NOTE]\
 > `simple-bar` is trying to use yabai by default. If you want to switch to AeroSpace, you'll need to open the settings module (simply click on `simple-bar` then press `cmd` + `,`). Same if you are using FlashSpace. You'll find the window manager choice in the "Global" tab.
@@ -55,8 +55,10 @@ You'll find the full installation guide in the [documentation](https://www.jeant
 
 Here are the features I'm planning to add in the future:
 
+- A timer widget ([#474](https://github.com/Jean-Tinland/simple-bar/issues/474))
 - Bars configurator (spawn multiple bars, place widgets anywhere…) [#380](https://github.com/Jean-Tinland/simple-bar/issues/380)
 - More accessibility settings like reading direction (LTR or RTL)
+- More default themes
 
 Feel free to open an issue if you have any feature request or if you want me to prioritize one of these features.
 

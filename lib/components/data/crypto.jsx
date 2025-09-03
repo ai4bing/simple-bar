@@ -27,13 +27,14 @@ export const Widget = React.memo(() => {
     identifiers,
     precision,
     showOnDisplay,
+    showIcon,
   } = cryptoWidgetOptions;
 
   // Calculate the refresh frequency using the provided or default value
   const refresh = React.useMemo(
     () =>
       Utils.getRefreshFrequency(refreshFrequency, DEFAULT_REFRESH_FREQUENCY),
-    [refreshFrequency]
+    [refreshFrequency],
   );
 
   // Determine if the widget should be visible on the current display
@@ -42,10 +43,18 @@ export const Widget = React.memo(() => {
 
   const ref = React.useRef();
   const denominatorToken = getDenominatorToken(denomination);
-  const cleanedUpIdentifiers = identifiers.replace(/ /g, "");
-  const enumeratedIdentifiers = cleanedUpIdentifiers
-    .replace(/ /g, "")
-    .split(",");
+
+  // Memoize cleanedUpIdentifiers to prevent recreation on every render
+  const cleanedUpIdentifiers = React.useMemo(
+    () => identifiers.replace(/ /g, ""),
+    [identifiers],
+  );
+
+  // Memoize enumeratedIdentifiers to prevent recreation on every render
+  const enumeratedIdentifiers = React.useMemo(
+    () => cleanedUpIdentifiers.replace(/ /g, "").split(","),
+    [cleanedUpIdentifiers],
+  );
 
   const [state, setState] = React.useState();
   const [loading, setLoading] = React.useState(visible);
@@ -62,7 +71,7 @@ export const Widget = React.memo(() => {
   const getCrypto = React.useCallback(async () => {
     if (!visible) return;
     const response = await fetch(
-      `https://api.coingecko.com/api/v3/simple/price?ids=${cleanedUpIdentifiers}&vs_currencies=${denomination}`
+      `https://api.coingecko.com/api/v3/simple/price?ids=${cleanedUpIdentifiers}&vs_currencies=${denomination}`,
     );
     const result = await response.json();
 
@@ -105,7 +114,7 @@ export const Widget = React.memo(() => {
       key={id}
       classes={classes}
       ref={ref}
-      Icon={getIcon(id)}
+      Icon={showIcon ? getIcon(id) : null}
       href={`https://coingecko.com/en/coins/${id}`}
       onClick={(e) => openCrypto(e, pushMissive)}
       onRightClick={refreshCrypto}

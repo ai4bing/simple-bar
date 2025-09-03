@@ -22,13 +22,13 @@ export const Widget = React.memo(() => {
   const { displayIndex, settings } = useSimpleBarContext();
   const { widgets, soundWidgetOptions } = settings;
   const { soundWidget } = widgets;
-  const { refreshFrequency, showOnDisplay } = soundWidgetOptions;
+  const { refreshFrequency, showOnDisplay, showIcon } = soundWidgetOptions;
 
   // Determine the refresh frequency for the widget.
   const refresh = React.useMemo(
     () =>
       Utils.getRefreshFrequency(refreshFrequency, DEFAULT_REFRESH_FREQUENCY),
-    [refreshFrequency]
+    [refreshFrequency],
   );
 
   // Determine if the widget should be visible on the current display.
@@ -56,10 +56,10 @@ export const Widget = React.memo(() => {
     if (!visible) return;
     const [volume, muted] = await Promise.all([
       Uebersicht.run(
-        `osascript -e 'set ovol to output volume of (get volume settings)'`
+        `osascript -e 'set ovol to output volume of (get volume settings)'`,
       ),
       Uebersicht.run(
-        `osascript -e 'set ovol to output muted of (get volume settings)'`
+        `osascript -e 'set ovol to output muted of (get volume settings)'`,
       ),
     ]);
     setState({
@@ -118,9 +118,11 @@ export const Widget = React.memo(() => {
   return (
     <DataWidget.Widget classes={classes} disableSlider>
       <div className="sound__display">
-        <SuspenseIcon>
-          <Icon />
-        </SuspenseIcon>
+        {showIcon && (
+          <SuspenseIcon>
+            <Icon />
+          </SuspenseIcon>
+        )}
         <span className="sound__value">{formattedVolume}</span>
       </div>
       <div className="sound__slider-container">
