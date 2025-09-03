@@ -326,7 +326,6 @@ export const Karabiner = React.lazy(() => import("./library/karabiner.jsx"));
 export const BetterTouchTool = React.lazy(
   () => import("./library/better-touch-tool.jsx"),
 );
-export const Docker = React.lazy(() => import("./library/docker.jsx"));
 export const WaterFox = React.lazy(() => import("./library/waterfox.jsx"));
 export const Steam = React.lazy(() => import("./library/steam.jsx"));
 export const Raycast = React.lazy(() => import("./library/raycast.jsx"));
