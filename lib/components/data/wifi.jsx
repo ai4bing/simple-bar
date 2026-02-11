@@ -57,17 +57,14 @@ export const Widget = React.memo(() => {
     if (!visible) return;
     const [status, ssid] = await Promise.all([
       Uebersicht.run(`ifconfig ${networkDevice} | grep status | cut -c 10-`),
-      Uebersicht.run(
-        `/opt/homebrew/bin/hs -c "hs.wifi.currentNetwork()"`,
-        // `system_profiler SPAirPortDataType | awk '/Current Network/ {getline;$1=$1;print $0 | "tr -d ':'";exit}'`
-      ),
+      Uebersicht.run(`/opt/homebrew/bin/hs -c "hs.wifi.currentNetwork()"`),
     ]);
     setState({
       status: Utils.cleanupOutput(status),
       ssid: Utils.cleanupOutput(ssid),
     });
     setLoading(false);
-  }, [networkDevice, visible]);
+  }, [networkDevice, visible, refresh]);
 
   useServerSocket("wifi", visible, getWifi, resetWidget, setLoading);
   useWidgetRefresh(visible, getWifi, refresh);
