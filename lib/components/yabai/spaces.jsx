@@ -97,7 +97,7 @@ const Component = React.memo(() => {
             </SuspenseIcon>
           </button>
         ) : (
-          isProcessVisible && <div className="spaces__end-separator" />
+          isProcessVisible
         )}
       </div>
     );
